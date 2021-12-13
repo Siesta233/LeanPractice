@@ -150,36 +150,62 @@ begin
   -- you can start with `rw injective_def` if you like
   -- but because `injective_def` is true by definition
   -- you can delete it later :-)
-  sorry
+  intros a b,
+  rw id_eval, rw id_eval, intro h, exact h,
 end
 
 example : surjective (id : X → X) :=
 begin
-  sorry
+  intros a,
+  use a, rw id_eval, 
 end
 
 example (f : X → Y) (g : Y → Z) (hf : injective f) (hg : injective g) :
   injective (g ∘ f) :=
 begin
-  sorry
+  intros a b,
+  intro h,
+  change g (f a) = g (f b) at h,
+  have h1 : f a = f b, by rw hg h,
+  rw hf h1,
 end
 
 example (f : X → Y) (g : Y → Z) (hf : surjective f) (hg : surjective g) :
   surjective (g ∘ f) :=
 begin
-  sorry
+  intros a,
+  rw surjective_def at hf,
+  rw surjective_def at hg,
+  change ∃ a_1 : X, g (f a_1)= a,
+  specialize hg a,
+  cases hg with a_2 ha2,
+  specialize hf a_2,
+  cases hf with a_3 ha3,
+  use a_3, rw ha3, apply ha2,
 end
 
 -- This is a question on the IUM function problem sheet
 example (f : X → Y) (g : Y → Z) : 
   injective (g ∘ f) → injective f :=
 begin
-  sorry
+  intros h a b,
+  rw injective_def at h,
+  change ∀ a b : X, g (f a) = g (f b) → a = b at h,
+  intro h1,
+  have h2: g (f a) = g (f b), by rw h1,
+  exact h a b h2,
 end
 
 -- This is another one
 example (f : X → Y) (g : Y → Z) : 
   surjective (g ∘ f) → surjective g :=
 begin
-  sorry
+  intro h,
+  rw surjective_def,
+  rw surjective_def at h,
+  intro y,
+  specialize h y,
+  cases h with x0 hx0,
+  use f x0,
+  change g (f x0) = y at hx0, apply hx0,
 end
